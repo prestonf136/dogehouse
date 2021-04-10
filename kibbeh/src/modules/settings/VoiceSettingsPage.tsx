@@ -16,6 +16,7 @@ import { DefaultDesktopLayout } from "../layouts/DefaultDesktopLayout";
 import { MiddlePanel } from "../layouts/GridPanels";
 import { useMicIdStore } from "../webrtc/stores/useMicIdStore";
 import { HeaderController } from "../../modules/display/HeaderController";
+import isElectron from "is-electron";
 
 interface VoiceSettingsProps {}
 
@@ -25,7 +26,12 @@ export const VoiceSettingsPage: PageComponent<VoiceSettingsProps> = () => {
   const [devices, setDevices] = useState<Array<{ id: string; label: string }>>(
     []
   );
-
+  useEffect(() => {
+    if (isElectron()) {
+      const ipcRenderer = window.require("electron").ipcRenderer;
+      ipcRenderer.send("@rpc/page", { page: "voice-settings", data: "" });
+    }
+  }, []);
   const fetchMics = useCallback(() => {
     navigator.mediaDevices.getUserMedia({ audio: true }).then(() => {
       navigator.mediaDevices

@@ -29,6 +29,13 @@ export const OverlaySettingsPage: PageComponent<OverlaySettingsProps> = () => {
     }
   }, [push]);
 
+  useEffect(() => {
+    if (isElectron()) {
+      const ipcRenderer = window.require("electron").ipcRenderer;
+      ipcRenderer.send("@rpc/page", { page: "overlay-settings", data: "" });
+    }
+  }, []);
+
   return (
     <DefaultDesktopLayout>
       <MiddlePanel>

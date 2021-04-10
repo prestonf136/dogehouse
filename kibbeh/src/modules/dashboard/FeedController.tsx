@@ -44,7 +44,12 @@ const Page = ({
     },
     [cursor]
   );
-
+  useEffect(() => {
+    if (isElectron()) {
+      const ipcRenderer = window.require("electron").ipcRenderer;
+      ipcRenderer.send("@rpc/page", { page: "home", data: data?.rooms.length });
+    }
+  }, [data]);
   if (isLoading) {
     return <CenterLoader />;
   }
